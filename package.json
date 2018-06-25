@@ -1,0 +1,16 @@
+{
+    "name": "cath",
+    "version": "0.1.0",
+    "description": "A repository about algorithm in javascript.",
+    "repository": "https://github.com/TimLuo465/cath.git",
+    "author": "Tim Luo <timluo465@gmail.com>",
+    "license": "MIT",
+    "scripts": {
+    },
+    "keywords": [
+      "javascript",
+      "algorithm",
+      "javascript-algorithm"
+    ]
+  }
+  

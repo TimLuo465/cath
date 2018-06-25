@@ -1,65 +1,63 @@
 var LZW = {
     compress: function (uncompressed) {
         "use strict";
-        // Build the dictionary.
-        var i,
-            dictionary = {},
-            c,
-            wc,
-            w = "",
-            result = [],
-            dictSize = 256;
 
-        for (i = 0; i < uncompressed.length; i += 1) {
+        var dictionary = {};
+        var result = [];
+        var dictSize = 256;
+        var w = "";
+        var len = uncompressed.length;
+        var i, c, wc;
+
+        for (i = 0; i < len; i += 1) {
             c = uncompressed.charAt(i);
             wc = w + c;
             //Do not use dictionary[wc] because javascript arrays 
             //will return values for array['pop'], array['push'] etc
             if (dictionary.hasOwnProperty(wc)) {
                 w = wc;
-            } else {
-                if (w && !dictionary[w]) {
-                    dictionary[w] = w.charCodeAt();
-                }
+                continue;
+            } 
 
-                if (dictionary[w]) {
-                    result.push(dictionary[w]);
-                    dictionary[wc] = dictSize++;
-                }
-                // Add wc to the dictionary.
-                w = String(c);
+            if (w && !dictionary.hasOwnProperty(w)) {
+                dictionary[w] = w.charCodeAt();
             }
+
+            if (dictionary.hasOwnProperty(w)) {
+                result.push(dictionary[w]);
+                dictionary[wc] = dictSize++;
+            }
+            // Add wc to the dictionary.
+            w = String(c);
         }
 
         // Output the code for w.
         if (w !== "") {
             result.push(dictionary[w] || w.charCodeAt());
         }
+
         return result;
     },
     decompress: function (compressed) {
         "use strict";
-        // Build the dictionary.
-        var i,
-            dictionary = [],
-            w,
-            result,
-            k,
-            entry = "",
-            dictSize = 256;
 
-        w = String.fromCharCode(compressed[0]);
-        result = w;
-        for (i = 1; i < compressed.length; i += 1) {
+        var dictionary = [];
+        var entry = "";
+        var dictSize = 256;
+        var len = compressed.length;
+        var i, w, result, k;
+
+        result = w = String.fromCharCode(compressed[0]);
+
+        for (i = 1; i < len; i += 1) {
             k = compressed[i];
+            
             if (dictionary[k]) {
                 entry = dictionary[k];
+            } else if(k === dictSize) {
+                entry = w + w.charAt(0);
             } else {
-                if (k === dictSize) {
-                    entry = w + w.charAt(0);
-                } else {
-                    entry = String.fromCharCode(k);
-                }
+                entry = String.fromCharCode(k);
             }
 
             result += entry;
@@ -69,6 +67,7 @@ var LZW = {
 
             w = entry;
         }
+
         return result;
     }
 };
